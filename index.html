@@ -18,11 +18,11 @@
 <body>
     <h1>Pediatric Drug Dosage Calculator</h1>
     <p class="disclaimer">Disclaimer: This tool is for informational purposes only and based on data from UpToDate. Always consult a healthcare professional before administering any medication. Dosages may vary based on specific conditions, and this is not a substitute for medical advice.</p>
-    
+   
     <label for="drug">Select Drug:</label>
     <select id="drug">
         <option value="">--Choose a drug--</option>
-        <option value="actifed">Actifed</option>
+        <option value="actifed">Actifed Syrup</option>
         <option value="amoxicillin">Amoxicillin</option>
         <option value="augmentin125">Augmentin 125/5ml</option>
         <option value="augmentin200">Augmentin 200/5ml</option>
@@ -31,32 +31,32 @@
         <option value="cephalexin">Cephalexin</option>
         <option value="cetirizine">Cetirizine</option>
         <option value="ceftriaxone">Ceftriaxone</option>
-        <option value="clarithromycin">Clarithromycin</option>
+        <option value="clarithromycin">Clarithromycin Syrup</option>
         <option value="clindamycin">Clindamycin</option>
         <option value="dextromethorphan">Dextromethorphan</option>
-        <option value="diphenhydramine">Diphenhydramine</option>
+        <option value="diphenhydramine">Diphenhydramine Syrup</option>
         <option value="domperidone">Domperidone</option>
         <option value="ibuprofen">Ibuprofen</option>
         <option value="loratadine">Loratadine</option>
-        <option value="montelukast">Montelukast</option>
+        <option value="montelukast">Montelukast Tab 5mg</option>
         <option value="paracetamol">Paracetamol (Acetaminophen)</option>
-        <option value="piriton">Piriton</option>
+        <option value="piriton">Piriton Syrup</option>
         <option value="prednisolone">Prednisolone</option>
         <option value="salbutamol">Salbutamol</option>
-        <option value="theophylline">Theophylline</option>
+        <option value="theophylline">Theophylline Syrup</option>
         <option value="tmpsmx">Trimethoprim-Sulfamethoxazole (TMP-SMX)</option>
     </select>
-    
+   
     <label for="weight">Child's Weight (kg):</label>
     <input type="number" id="weight" min="1" step="0.1">
-    
+   
     <label for="age">Child's Age (years):</label>
     <input type="number" id="age" min="0" step="0.1">
-    
+   
     <button onclick="calculateDosage()">Calculate</button>
-    
+   
     <div id="result"></div>
-    
+   
     <script>
         const drugs = {
             actifed: {
@@ -67,6 +67,7 @@
                 },
                 sideEffects: 'Drowsiness, insomnia, hypertension, dry mouth, nervousness.',
                 contraindications: 'Hypersensitivity, MAO inhibitors, severe hypertension, severe coronary artery disease.',
+                indications: 'Common cold, seasonal allergies, sneezing, runny or stuffy nose, itchy watery eyes.',
                 g6pd_safe: 'Yes'
             },
             amoxicillin: {
@@ -74,18 +75,19 @@
                     let freq = 'every 8-12 hours';
                     let times = '2-3 times per day';
                     if (weight >= 40) {
-                        return `250-500 mg ${freq} (${times}), or 875 mg every 12 hours (2 times per day).`;
+                        return `250-500 mg ${freq} (${times}), or 750-1000 mg every 12 hours (2 times per day).`;
                     } else {
                         let min_daily_kg = 20;
                         let max_daily_kg = 90;
                         let min_daily = min_daily_kg * weight;
                         let max_daily = max_daily_kg * weight;
-                        let typical_dose = (80 * weight) / 3;
-                        return `Daily total: ${min_daily.toFixed(1)}-${max_daily.toFixed(1)} mg, divided ${freq} (${times}). Typical high dose: ${typical_dose.toFixed(1)} mg 3 times per day.`;
+                        let typical_dose = Math.round((40 * weight) / 3);
+                        return `Daily total: ${Math.round(min_daily)}-${Math.round(max_daily)} mg, divided ${freq} (${times}). Typical: ${typical_dose} mg 3 times per day.`;
                     }
                 },
                 sideEffects: 'Rash, diarrhoea, nausea, vomiting, superinfection, headache, behavioural changes. Potentially fatal: Hypersensitivity, C. difficile colitis.',
                 contraindications: 'Hypersensitivity to penicillins or beta-lactams, infectious mononucleosis.',
+                indications: 'Bacterial infections such as otitis media, pneumonia, urinary tract infections, sinusitis.',
                 g6pd_safe: 'Yes'
             },
             augmentin125: {
@@ -102,12 +104,13 @@
                         times = '3 times per day';
                     }
                     let dose_per_time = parseInt(times[0]);
-                    let dose = (daily_kg * weight) / dose_per_time;
-                    let max_daily = 2000;
-                    return `${dose.toFixed(1)} mg (amoxicillin component) ${freq} (${times}). Max daily amoxicillin: ${max_daily} mg. Note: Based on 125 mg amoxicillin/31.25 mg clavulanate per 5 mL suspension.`;
+                    let dose = Math.round((daily_kg * weight) / dose_per_time);
+                    let max_daily = 2000; // example max
+                    return `${dose} mg (amoxicillin component) ${freq} (${times}). Max daily amoxicillin: ${max_daily} mg. Note: Based on 125 mg amoxicillin/31.25 mg clavulanate per 5 mL suspension.`;
                 },
                 sideEffects: 'Diarrhoea, nausea, vomiting, abdominal pain, rash, urticaria, superinfection. Potentially fatal: Anaphylaxis, Stevens-Johnson syndrome, C. difficile colitis, hepatotoxicity.',
                 contraindications: 'Hypersensitivity to penicillins or beta-lactams, history of Augmentin-associated jaundice or hepatic dysfunction, infectious mononucleosis.',
+                indications: 'Bacterial infections resistant to amoxicillin, such as sinusitis, otitis media, lower respiratory tract infections, skin infections, bites.',
                 g6pd_safe: 'Yes'
             },
             augmentin200: {
@@ -115,16 +118,17 @@
                     if (age < 0.083) return 'Not recommended for neonates under 1 month.';
                     let dose_kg_low = 20;
                     let dose_kg_high = 45;
-                    let low_dose = (dose_kg_low * weight) / 2;
-                    let high_dose = (dose_kg_high * weight) / 2;
+                    let low_dose = dose_kg_low * weight / 2;
+                    let high_dose = dose_kg_high * weight / 2;
                     let freq = 'every 12 hours';
                     let times = '2 times per day';
                     let max_daily_kg = 90;
                     let max_daily = max_daily_kg * weight;
-                    return `For mild-moderate infections: ${low_dose.toFixed(1)}-${high_dose.toFixed(1)} mg (amoxicillin component) ${freq} (${times}). For severe: up to ${(max_daily / 2).toFixed(1)} mg q12h. Max daily amoxicillin: ${max_daily.toFixed(1)} mg. Note: Based on 200 mg amoxicillin/28.5 mg clavulanate per 5 mL suspension.`;
+                    return `For mild-moderate infections: ${Math.round(low_dose)}-${Math.round(high_dose)} mg (amoxicillin component) ${freq} (${times}). For severe: up to ${Math.round(max_daily / 2)} mg q12h. Max daily amoxicillin: ${Math.round(max_daily)} mg. Note: Based on 200 mg amoxicillin/28.5 mg clavulanate per 5 mL suspension.`;
                 },
                 sideEffects: 'Diarrhoea, nausea, vomiting, abdominal pain, rash, urticaria, superinfection. Potentially fatal: Anaphylaxis, Stevens-Johnson syndrome, C. difficile colitis, hepatotoxicity.',
                 contraindications: 'Hypersensitivity to penicillins or beta-lactams, history of Augmentin-associated jaundice or hepatic dysfunction, infectious mononucleosis.',
+                indications: 'Bacterial infections resistant to amoxicillin, such as sinusitis, otitis media, lower respiratory tract infections, skin infections, bites.',
                 g6pd_safe: 'Yes'
             },
             augmentin400: {
@@ -132,16 +136,17 @@
                     if (age < 0.083) return 'Not recommended for neonates under 1 month.';
                     let dose_kg_low = 20;
                     let dose_kg_high = 45;
-                    let low_dose = (dose_kg_low * weight) / 2;
-                    let high_dose = (dose_kg_high * weight) / 2;
+                    let low_dose = dose_kg_low * weight / 2;
+                    let high_dose = dose_kg_high * weight / 2;
                     let freq = 'every 12 hours';
                     let times = '2 times per day';
                     let max_daily_kg = 90;
                     let max_daily = max_daily_kg * weight;
-                    return `For mild-moderate infections: ${low_dose.toFixed(1)}-${high_dose.toFixed(1)} mg (amoxicillin component) ${freq} (${times}). For severe: up to ${(max_daily / 2).toFixed(1)} mg q12h. Max daily amoxicillin: ${max_daily.toFixed(1)} mg. Note: Based on 400 mg amoxicillin/57 mg clavulanate per 5 mL suspension.`;
+                    return `For mild-moderate infections: ${Math.round(low_dose)}-${Math.round(high_dose)} mg (amoxicillin component) ${freq} (${times}). For severe: up to ${Math.round(max_daily / 2)} mg q12h. Max daily amoxicillin: ${Math.round(max_daily)} mg. Note: Based on 400 mg amoxicillin/57 mg clavulanate per 5 mL suspension.`;
                 },
                 sideEffects: 'Diarrhoea, nausea, vomiting, abdominal pain, rash, urticaria, superinfection. Potentially fatal: Anaphylaxis, Stevens-Johnson syndrome, C. difficile colitis, hepatotoxicity.',
                 contraindications: 'Hypersensitivity to penicillins or beta-lactams, history of Augmentin-associated jaundice or hepatic dysfunction, infectious mononucleosis.',
+                indications: 'Bacterial infections resistant to amoxicillin, such as sinusitis, otitis media, lower respiratory tract infections, skin infections, bites.',
                 g6pd_safe: 'Yes'
             },
             azithromycin: {
@@ -150,52 +155,52 @@
                     if (weight > 45) return '500 mg on day 1, then 250 mg on days 2-5 (1 time per day), or 500 mg daily for 3 days.';
                     let dose_day1 = 10 * weight;
                     let dose_sub = 5 * weight;
-                    return `${dose_day1.toFixed(1)} mg on day 1, then ${dose_sub.toFixed(1)} mg once daily on days 2-5 (1 time per day). Alternatively, ${dose_day1.toFixed(1)} mg once daily for 3 days.`;
+                    return `${Math.round(dose_day1)} mg on day 1, then ${Math.round(dose_sub)} mg once daily on days 2-5 (1 time per day). Alternatively, ${Math.round(dose_day1)} mg once daily for 3 days.`;
                 },
                 sideEffects: 'Hearing loss, tinnitus, myasthenia gravis exacerbation, fungal superinfection, infantile hypertrophic pyloric stenosis, nausea, diarrhoea, abdominal pain, flatulence, vomiting, dyspepsia, dysgeusia, dizziness, headache, paraesthesia, somnolence, rash, pruritus. Potentially fatal: Hepatotoxicity, QT prolongation, C. difficile colitis, serious allergic reactions (e.g., anaphylaxis, Stevens-Johnson syndrome).',
                 contraindications: 'Hypersensitivity to azithromycin or macrolides/ketolides, history of cholestatic jaundice/hepatic dysfunction with prior azithromycin.',
+                indications: 'Bacterial infections like otitis media, pharyngitis, pneumonia, pertussis, chlamydia.',
                 g6pd_safe: 'Yes'
             },
             cephalexin: {
                 dosage: function(weight, age) {
-                    let mild_daily_kg = 50;
-                    let severe_daily_kg = 100;
-                    let mild_dose = (mild_daily_kg * weight) / 3;
-                    let severe_dose = (severe_daily_kg * weight) / 3;
+                    let mild_dose = 25 * weight;
+                    let severe_dose = 50 * weight;
                     let freq = 'every 8 hours';
                     let times = '3 times per day';
                     let max_mild = 500;
                     let max_severe = 1000;
-                    return `Mild-Moderate: ${mild_dose.toFixed(1)} mg ${freq} (${times}), max ${max_mild} mg/dose. Severe: ${severe_dose.toFixed(1)} mg ${freq} (${times}), max ${max_severe} mg/dose.`;
+                    return `Mild-Moderate: ${Math.round(mild_dose)} mg ${freq} (${times}), max ${max_mild} mg/dose. Severe: ${Math.round(severe_dose)} mg ${freq} (${times}), max ${max_severe} mg/dose.`;
                 },
                 sideEffects: 'Diarrhea, nausea, vomiting, stomach pain, rash, itching, hives, allergic reactions, pseudomembranous colitis.',
                 contraindications: 'Hypersensitivity to cephalexin, cephalosporins, or penicillins; history of severe allergic reactions or skin rash.',
+                indications: 'Skin and soft tissue infections, urinary tract infections, respiratory tract infections, otitis media.',
                 g6pd_safe: 'Yes'
             },
             cetirizine: {
                 dosage: function(weight, age) {
                     if (age < 0.5) return 'Not recommended for <6 months.';
-                    else if (age < 2) return '2.5 mg every 24 hours (1 time per day).';
-                    else if (age < 6) return '2.5-5 mg every 24 hours (1 time per day).';
-                    else if (age < 12) return '5 mg every 12 hours (2 times per day) or 10 mg once daily.';
+                    else if (age < 6) return '2.5 mg every 24 hours (1 time per day).';
+                    else if (age < 12) return '5 mg every 12 hours (2 times per day).';
                     else return '10 mg every 24 hours (1 time per day).';
                 },
                 sideEffects: 'Abdominal pain, dry mouth, nausea, diarrhoea, dizziness, headache, somnolence, fatigue.',
                 contraindications: 'Severe renal impairment (CrCl <10 mL/min).',
+                indications: 'Allergic rhinitis, chronic urticaria, seasonal allergies.',
                 g6pd_safe: 'Yes'
             },
             ceftriaxone: {
                 dosage: function(weight, age) {
                     if (age < 1/12) return 'Contraindicated in neonates if using calcium-containing IV solutions.';
-                    let dose_low = 50 * weight;
-                    let dose_high = 75 * weight;
+                    let dose = 50 * weight;
                     let freq = 'every 24 hours';
                     let times = '1 time per day';
                     let max_dose = 2000;
-                    return `${dose_low.toFixed(1)}-${dose_high.toFixed(1)} mg ${freq} (${times}), max ${max_dose} mg/dose. For meningitis: every 12 hours (2 times per day).`;
+                    return `${Math.round(dose)} mg ${freq} (${times}), max ${max_dose} mg/dose. For meningitis: q12h (2 times per day).`;
                 },
                 sideEffects: 'Diarrhea, nausea, headache, rash, injection site pain, eosinophilia, leukopenia, thrombocytopenia, increased hepatic enzymes.',
                 contraindications: 'Hypersensitivity to ceftriaxone or cephalosporins; neonates requiring calcium-containing IV solutions; hyperbilirubinemic neonates.',
+                indications: 'Serious bacterial infections such as meningitis, pneumonia, gonorrhea, Lyme disease, endocarditis prophylaxis.',
                 g6pd_safe: 'Yes'
             },
             clarithromycin: {
@@ -204,23 +209,24 @@
                     let freq = 'every 12 hours';
                     let times = '2 times per day';
                     let max_dose = 500;
-                    return `${dose.toFixed(1)} mg ${freq} (${times}), max ${max_dose} mg/dose.`;
+                    return `${Math.round(dose)} mg ${freq} (${times}), max ${max_dose} mg/dose.`;
                 },
                 sideEffects: 'Diarrhea, nausea, abnormal taste, dyspepsia, abdominal pain, headache, rash.',
                 contraindications: 'Hypersensitivity to clarithromycin or macrolides, concomitant use with certain drugs (e.g., pimozide, ergot alkaloids).',
+                indications: 'Respiratory tract infections, pharyngitis, pneumonia, skin infections, pertussis.',
                 g6pd_safe: 'Yes'
             },
             clindamycin: {
                 dosage: function(weight, age) {
-                    let dose_low = 7 * weight;
-                    let dose_high = 13 * weight;
-                    let freq = 'every 6-8 hours';
-                    let times = '3-4 times per day';
-                    let max_dose = 450;
-                    return `${dose_low.toFixed(1)}-${dose_high.toFixed(1)} mg ${freq} (${times}), max ${max_dose} mg/dose. For severe infections, use higher end.`;
+                    let dose = 10 * weight;
+                    let freq = 'every 8 hours';
+                    let times = '3 times per day';
+                    let max_dose = 600;
+                    return `${Math.round(dose)} mg ${freq} (${times}), max ${max_dose} mg/dose. For bone/joint: higher dose may be needed.`;
                 },
                 sideEffects: 'Diarrhea (including C. difficile colitis), nausea, vomiting, stomach pain, rash, metallic taste, allergic reactions.',
                 contraindications: 'Hypersensitivity to clindamycin; history of pseudomembranous colitis or severe diarrhea with antibiotics.',
+                indications: 'Skin and soft tissue infections, bone and joint infections, intra-abdominal infections, anaerobic infections.',
                 g6pd_safe: 'Yes'
             },
             dextromethorphan: {
@@ -232,21 +238,21 @@
                 },
                 sideEffects: 'Drug dependence (prolonged use), diarrhoea, gastrointestinal distress, stomach pain, nausea, vomiting, dizziness, drowsiness, convulsions, excitation, mental confusion, nervousness, restlessness, respiratory depression, rash.',
                 contraindications: 'Acute asthma attack, respiratory insufficiency or depression, chronic cough with mucus, risk of respiratory failure (e.g., COPD, pneumonia), hepatic impairment. Concomitant use with MAOIs, SSRIs, other antidepressants, or Parkinson\'s medications.',
+                indications: 'Non-productive cough due to minor throat and bronchial irritation.',
                 g6pd_safe: 'Yes'
             },
             diphenhydramine: {
                 dosage: function(weight, age) {
                     if (age < 2) return 'Not recommended for children under 2 years.';
-                    let dose_low = 1 * weight;
-                    let dose_high = 1.25 * weight;
+                    let dose = 1.25 * weight;
                     let freq = 'every 6-8 hours';
                     let times = '3-4 times per day';
                     let max_daily = 5 * weight;
-                    let max_dose = 50;
-                    return `${dose_low.toFixed(1)}-${dose_high.toFixed(1)} mg ${freq} (${times}), max dose ${max_dose} mg. Max daily: ${max_daily.toFixed(1)} mg.`;
+                    return `${Math.round(dose)} mg ${freq} (${times}). Max daily: ${Math.round(max_daily)} mg.`;
                 },
                 sideEffects: 'Drowsiness, excitation in some children, dry mouth, dizziness, nausea, tachycardia.',
                 contraindications: 'Hypersensitivity, neonates, concomitant MAO inhibitors, severe liver disease.',
+                indications: 'Allergic reactions, hives, nasal allergies, itching, motion sickness.',
                 g6pd_safe: 'Yes'
             },
             domperidone: {
@@ -256,6 +262,7 @@
                 },
                 sideEffects: 'Increased prolactin levels, QT prolongation, oculogyric crisis, dry mouth, diarrhoea, asthenia, anaphylactic reaction, abnormal LFT, headache, somnolence, convulsion, extrapyramidal disorder, anxiety, loss of libido, agitation, nervousness, urinary retention, breast pain/tenderness, galactorrhoea, amenorrhoea, gynaecomastia, rash, pruritus, angioedema, urticaria. Potentially fatal: Ventricular arrhythmias, Torsade de Pointes, sudden cardiac death.',
                 contraindications: 'Prolactinoma, conditions where gastric motility stimulation is harmful (e.g., GI haemorrhage, obstruction), QT prolongation, cardiac disease (e.g., CHF), electrolyte disturbances, moderate/severe hepatic impairment. Concomitant use with QT-prolonging drugs or potent CYP3A4 inhibitors.',
+                indications: 'Nausea, vomiting, dyspepsia, gastroesophageal reflux.',
                 g6pd_safe: 'Yes'
             },
             ibuprofen: {
@@ -267,49 +274,65 @@
                     let max_dose = max_dose_kg * weight;
                     let freq = 'every 6-8 hours';
                     let times = '3-4 times per day';
-                    let max_daily_kg = 40;
+                    let max_daily_kg = 30;
                     let max_daily = max_daily_kg * weight;
-                    let max_dose_single = 400;
-                    return `${min_dose.toFixed(1)}-${max_dose.toFixed(1)} mg ${freq} (${times}), max single dose ${max_dose_single} mg. Max daily: ${max_daily.toFixed(1)} mg.`;
+                    return `${Math.round(min_dose)}-${Math.round(max_dose)} mg ${freq} (${times}). Max daily: ${Math.round(max_daily)} mg.`;
                 },
                 sideEffects: 'Hypertension, drowsiness, dizziness, tinnitus, nausea, vomiting, fatigue, headache, rash, pruritus. Potentially fatal: CV events, GI ulceration, hepatic reactions, severe skin reactions.',
                 contraindications: 'Hypersensitivity to ibuprofen or NSAIDs, history of GI bleeding, severe heart failure, 3rd trimester pregnancy.',
+                indications: 'Fever, pain, inflammation in conditions like juvenile arthritis.',
                 g6pd_safe: 'Yes'
             },
             loratadine: {
                 dosage: function(weight, age) {
                     if (age < 2) return 'Not recommended for children under 2 years.';
-                    let dose = age < 6 ? 5 : 10;
+                    let dose;
+                    if (age < 12) {
+                        dose = (weight <= 30) ? 5 : 10;
+                    } else {
+                        dose = 10;
+                    }
                     return `${dose} mg every 24 hours (1 time per day).`;
                 },
                 sideEffects: 'Fatigue, nervousness, headache, drowsiness, dizziness, convulsion, hypersensitivity reactions (anaphylaxis, angioedema), tachycardia, palpitation, nausea, dry mouth, gastritis, abnormal hepatic function, increased weight, appetite, insomnia, rash, alopecia.',
                 contraindications: 'Severe hepatic and renal impairment (use with caution).',
+                indications: 'Seasonal allergic rhinitis, chronic urticaria.',
                 g6pd_safe: 'Yes'
             },
             montelukast: {
                 dosage: function(weight, age) {
-                    if (age < 0.5) return 'Not recommended under 6 months.';
-                    let dose = age < 6 ? 4 : (age < 15 ? 5 : 10);
+                    let dose;
+                    if (age < 6) dose = 4;
+                    else if (age < 15) dose = 5;
+                    else dose = 10;
                     return `${dose} mg every 24 hours (1 time per day).`;
                 },
                 sideEffects: 'Headache, abdominal pain, neuropsychiatric events (agitation, anxiety, depression, sleep disorders), dizziness, dyspepsia, elevated liver enzymes.',
                 contraindications: 'Hypersensitivity to montelukast.',
+                indications: 'Asthma, allergic rhinitis, exercise-induced bronchoconstriction.',
                 g6pd_safe: 'Yes'
             },
             paracetamol: {
                 dosage: function(weight, age) {
-                    let dose_low_kg = 10;
-                    let dose_high_kg = 15;
-                    let dose_low = dose_low_kg * weight;
-                    let dose_high = dose_high_kg * weight;
+                    let dose_mg;
+                    if (age < 0.25) return 'Not recommended for age <3 months without medical advice.';
+                    else if (age < 0.5) dose_mg = 60;
+                    else if (age < 2) dose_mg = 120;
+                    else if (age < 4) dose_mg = 180;
+                    else if (age < 6) dose_mg = 240;
+                    else if (age < 8) dose_mg = 250;
+                    else if (age < 10) dose_mg = 375;
+                    else if (age < 12) dose_mg = 500;
+                    else if (age < 16) dose_mg = 750;
+                    else dose_mg = 1000;
                     let freq = 'every 4-6 hours as needed';
                     let times = 'up to 4 times per day';
-                    let max_daily_kg = age < 2 ? 60 : 75;
-                    let max_daily = Math.min(max_daily_kg * weight, 4000);
-                    return `${dose_low.toFixed(1)}-${dose_high.toFixed(1)} mg ${freq} (${times}). Max daily: ${max_daily.toFixed(1)} mg.`;
+                    let max_daily = dose_mg * 4;
+                    return `${dose_mg} mg ${freq} (${times}). Max daily: ${max_daily} mg. Note: This is age-based; consult for weight adjustments if needed.`;
                 },
                 sideEffects: 'Anaemia, thrombocytopenia, tachycardia, nausea, vomiting, fatigue, hypokalaemia, dyspnoea, rash, pruritus, hypotension. Potentially fatal: Hepatic injury, anaphylaxis, serious skin reactions.',
                 contraindications: 'Severe hepatic impairment or active liver disease (IV).',
+                indications: 'Fever, mild to moderate pain.',
                 g6pd_safe: 'Yes'
             },
             piriton: {
@@ -326,21 +349,22 @@
                 },
                 sideEffects: 'Drowsiness, dry mouth, dizziness, nausea, headache, urinary retention.',
                 contraindications: 'Hypersensitivity, neonates, concomitant MAO inhibitors.',
+                indications: 'Allergic rhinitis, urticaria, pruritus.',
                 g6pd_safe: 'Yes'
             },
             prednisolone: {
                 dosage: function(weight, age) {
-                    let min_kg = 1;
+                    let min_kg = 0.14;
                     let max_kg = 2;
                     let min_daily = min_kg * weight;
                     let max_daily = max_kg * weight;
-                    let freq = 'every 12-24 hours';
-                    let times = '1-2 times per day';
-                    let max_daily_dose = 60;
-                    return `Daily total: ${min_daily.toFixed(1)}-${max_daily.toFixed(1)} mg divided ${freq} (${times}), max daily ${max_daily_dose} mg. Use lowest effective dose for shortest duration.`;
+                    let freq = 'every 6-8 hours';
+                    let times = '3-4 times per day';
+                    return `Daily total: ${Math.round(min_daily)}-${Math.round(max_daily)} mg divided ${freq} (${times}). Use lowest effective dose for shortest duration.`;
                 },
                 sideEffects: 'Cushing\'s syndrome, HPA axis suppression, adrenal atrophy, Kaposi\'s sarcoma, growth retardation, withdrawal syndrome, immunosuppression, myopathy, psychiatric disturbances, electrolyte imbalances, fluid retention, hypertension, hyperglycaemia, osteoporosis, GI perforation, visual disturbances, glaucoma, cataracts. Blood: Leucocytosis. Cardiac: CHF, bradycardia. Ear: Vertigo. Endocrine: Diabetes manifestations. Eye: Mydriasis, ptosis, keratitis. GI: Nausea, vomiting, dyspepsia. General: Impaired healing, malaise. Immune: Hypersensitivity. Investigations: Weight increase. Metabolism: Negative protein/Ca balance. Musculoskeletal: Atrophy, weakness, fractures. Nervous: Headache, dizziness. Reproductive: Menstrual irregularities. Respiratory: Hiccups. Skin: Atrophy, acne, rash. Vascular: Thromboembolism. Potentially fatal: Adrenal insufficiency, scleroderma renal crisis.',
                 contraindications: 'Oral: Untreated systemic infection, live vaccines (immunosuppressive doses). Ophthalmic: Herpes simplex, fungal/mycobacterial eye infections, viral diseases. Otic: Perforated tympanic membrane. Rectal: Traumatised anorectal mucosa (obstruction, fistulae, perforation).',
+                indications: 'Asthma exacerbations, inflammatory conditions, autoimmune diseases, allergic reactions.',
                 g6pd_safe: 'Yes'
             },
             salbutamol: {
@@ -356,60 +380,59 @@
                 },
                 sideEffects: 'Tachycardia, palpitations, tremor, headache, nausea, muscle cramps, hypokalaemia. Potentially fatal: Paradoxical bronchospasm.',
                 contraindications: 'For IV in premature labour: ischaemic heart disease, <22 weeks gestation. Non-IV: Not for uncomplicated premature labour.',
+                indications: 'Asthma, bronchospasm, exercise-induced bronchoconstriction.',
                 g6pd_safe: 'Yes'
             },
             theophylline: {
                 dosage: function(weight, age) {
-                    if (age < 1) return 'Consult for infants under 1 year; use with caution.';
                     let daily_kg;
-                    if (age < 9) daily_kg = 22;
-                    else if (age < 12) daily_kg = 16;
-                    else if (age < 16) daily_kg = 13;
-                    else daily_kg = 10;
-                    let dose = (daily_kg * weight) / 4;
+                    if (age < 1) daily_kg = 0.2 * (age * 52) + 5; // approximate for infants
+                    else daily_kg = 16; // approximate for children
+                    let dose = Math.round((daily_kg * weight) / 4);
                     let freq = 'every 6 hours';
                     let times = '4 times per day';
-                    let max_daily = daily_kg * weight;
-                    return `${dose.toFixed(1)} mg ${freq} (${times}). Max daily: ${max_daily.toFixed(1)} mg. Monitor serum levels.`;
+                    let max_daily = Math.round(daily_kg * weight);
+                    return `${dose} mg ${freq} (${times}). Max daily: ${max_daily} mg. Monitor serum levels.`;
                 },
                 sideEffects: 'Nausea, vomiting, headache, tachycardia, seizures, hypokalemia.',
                 contraindications: 'Hypersensitivity, uncontrolled arrhythmias, hyperthyroidism.',
+                indications: 'Asthma, chronic obstructive pulmonary disease.',
                 g6pd_safe: 'Yes'
             },
             tmpsmx: {
                 dosage: function(weight, age) {
                     if (age < 2/12) return 'Contraindicated in infants less than 2 months.';
-                    let mild_dose = 4 * weight;
-                    let severe_dose = (15 * weight) / 4;
+                    let mild_dose = 5 * weight;
+                    let severe_dose = 5 * weight;
                     let mild_freq = 'every 12 hours';
                     let mild_times = '2 times per day';
-                    let severe_freq = 'every 6 hours';
-                    let severe_times = '4 times per day';
+                    let severe_freq = 'every 6-8 hours';
+                    let severe_times = '3-4 times per day';
                     let max_mild = 160;
-                    let max_severe = 320;
-                    return `Mild-Moderate: ${mild_dose.toFixed(1)} mg TMP ${mild_freq} (${mild_times}), max ${max_mild} mg TMP/dose. Serious/PCP: ${severe_dose.toFixed(1)} mg TMP ${severe_freq} (${severe_times}), max ${max_severe} mg TMP/dose.`;
+                    let max_severe = 480;
+                    return `Mild-Moderate: ${Math.round(mild_dose)} mg TMP ${mild_freq} (${mild_times}), max ${max_mild} mg TMP/dose. Serious/PCP: ${Math.round(severe_dose)} mg TMP ${severe_freq} (${severe_times}), max ${max_severe} mg TMP/dose.`;
                 },
                 sideEffects: 'Nausea, vomiting, diarrhea, rash, itching, hypersensitivity reactions, blood disorders, photosensitivity, Stevens-Johnson syndrome.',
                 contraindications: 'Hypersensitivity to sulfa drugs or trimethoprim; infants <2 months; megaloblastic anemia due to folate deficiency; severe renal impairment.',
+                indications: 'Urinary tract infections, otitis media, Pneumocystis pneumonia, shigellosis.',
                 g6pd_safe: 'No'
             }
         };
-
         function calculateDosage() {
             const drug = document.getElementById('drug').value;
             const weight = parseFloat(document.getElementById('weight').value);
             const age = parseFloat(document.getElementById('age').value);
-            
+           
             if (!drug || isNaN(weight) || weight <= 0 || isNaN(age) || age < 0) {
                 document.getElementById('result').innerHTML = '<p>Please select a drug and enter valid weight and age.</p>';
                 return;
             }
-            
+           
             const info = drugs[drug];
             const dosage = info.dosage(weight, age);
             const g6pd_safe = info.g6pd_safe;
             const g6pd_color = g6pd_safe === 'Yes' ? 'green' : 'red';
-            
+           
             document.getElementById('result').innerHTML = `
                 <h2>${drug.charAt(0).toUpperCase() + drug.slice(1).replace(/(\d+)/, ' $1').replace('tmpsmx', 'TMP-SMX')}</h2>
                 <p><strong>Calculated Dosage:</strong> ${dosage}</p>
@@ -417,6 +440,7 @@
                     <tr><th>Category</th><th>Details</th></tr>
                     <tr><td>Potential Side Effects</td><td>${info.sideEffects}</td></tr>
                     <tr><td>Contraindications</td><td>${info.contraindications}</td></tr>
+                    <tr><td>Diseases Treated</td><td>${info.indications}</td></tr>
                     <tr><td>Safe for G6PD Deficiency</td><td><span style="color:${g6pd_color};">${g6pd_safe}</span></td></tr>
                 </table>
             `;
